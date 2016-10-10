@@ -1,0 +1,3 @@
+class BloodSugar < ApplicationRecord
+  belongs_to :device
+end

@@ -1,0 +1,17 @@
+class DevicesController < Actioncontroller::Base
+  before_action :load_device
+
+  def edit
+    if device.nil?
+      raise RecordNotFound
+    end
+  end
+
+
+
+  protected
+
+  def load_device
+    device = Device.find_by_uid(request.headers['uid'])
+  end
+end

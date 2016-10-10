@@ -1,0 +1,17 @@
+class Api::V1::BloodSugarsController < Api::V1::ApplicationController
+  include AESDecryptor
+  before_action :load_device
+
+  def index
+    if device.nil?
+      render nothing: true, status: 201
+    end
+
+    decrypt_body(request.body, device)
+
+  end
+
+  def load_device
+    device = Device.find_by_uid(request.headers['uid'])
+  end
+end
