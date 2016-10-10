@@ -1,4 +1,7 @@
-p_crypto = require("p_crypto")
+dofile("p_crypto.lua")
 
-print(crypto.encrypt("AES-CBC", "1234567890abcdef", "Hi, I'm secret!", "ivivivivi"))
-print(p_crypto.p_encrypt("1234567890abcdef", "Hi, I'm secret!"))
+test= p_crypto.p_encrypt("Hi, I'm secret!", "1234567890abcdef")
+
+dtest = p_crypto.p_decrypt(encoder.toBase64(test), "1234567890abcdef", encoder.toBase64(p_crypto.generate_iv()))
+
+print(dtest)

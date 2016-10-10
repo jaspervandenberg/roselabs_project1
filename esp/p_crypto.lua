@@ -1,22 +1,19 @@
-local M = {}
+p_crypto = {}
 
 --Decrypts using a base64 encoded body and iv(nounce)
-local function p_decrypt(body, key, iv)
+p_crypto.p_decrypt = function(body, key, iv)
     return crypto.decrypt("AES-CBC", key, encoder.fromBase64(body), encoder.fromBase64(iv))
 end
 
 --Encrypts using a generated iv
-local function p_encrypt(body, key)
-    return crypto.encrypt("AES-CBC", key, body, generate_iv())
-end
+p_crypto.p_encrypt = function(body, key)
+    return crypto.encrypt("AES-CBC", key, body, p_crypto.generate_iv());
+end;
 
 --Generate iv for encryption
-function generate_iv()
+p_crypto.generate_iv = function()
     return "ivivivivivivivi"
 end
 
---Assign functions to M for external usage
-M.p_encrypt = p_encrypt
-M.p_decrypt = p_decrypt
 
-return M
+
