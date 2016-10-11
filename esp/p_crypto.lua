@@ -12,7 +12,7 @@ end;
 
 --Generate iv for encryption
 p_crypto.generate_iv = function()
-    return "ivivivivivivivi"
+    return "ditiseennietwillekeurigeiv"
 end
 
 
