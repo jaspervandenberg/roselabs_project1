@@ -1,14 +1,14 @@
 commun = {}
 
-commun.serverip = "192.168.1.100"
+commun.server = "spectre"
 
 commun.setup = function(ssid, password)
     wifi.sta.config(ssid, password)
 end
 
 commun.post = function(data)
-    http.post('http://httpbin.org/post',
-        'Content-Type: text/plain\r\n',
+    http.put('http://'..commun.server..':3000/api/v1/devices',
+        'Content-Type: text/plain\r\nuid: 2zCpe4HRSho78T3\r\niv: ivivivivivivivi',
         data,
         function(code, data)
             if (code < 0) then
