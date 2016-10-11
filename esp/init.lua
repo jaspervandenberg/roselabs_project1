@@ -1,4 +1,7 @@
+dofile("commun.lua")
 dofile("p_crypto.lua")
+
+commun.setup("pineapple", "notanapple")
 
 test= p_crypto.p_encrypt("Hi, I'm secret!", "1234567890abcdef")
 
