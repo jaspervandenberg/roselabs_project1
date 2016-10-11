@@ -1,5 +1,6 @@
 class Device < ApplicationRecord
   include SecureUID
+  has_many :blood_sugars
 
   after_create :set_uid
   after_create :set_key
@@ -18,7 +19,7 @@ class Device < ApplicationRecord
 
   def set_key
     key = OpenSSL::Cipher::AES128.new(:CBC).random_key
-    key = Base64.encode64(key).encode('utf-8')
+    key = Base64.strict_encode64(key)
     self.key = key
     self.save
   end

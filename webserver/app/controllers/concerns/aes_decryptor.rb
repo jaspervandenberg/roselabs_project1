@@ -7,9 +7,10 @@ module AESDecryptor
     cipher = OpenSSL::Cipher::AES128.new(:CBC)
     cipher.decrypt
     cipher.key = Base64.decode64(device.key)
-    cipher.iv = Base64.decode(iv)
+    cipher.iv = iv
+    cipher.padding = 0
 
-    return cipher.update(Base64.decode(body)) + cipher.final
+    return cipher.update(Base64.decode64(body)) + cipher.final
   end
 
   # Device needs to be an activerecord object
@@ -19,7 +20,7 @@ module AESDecryptor
     cipher.key = Base64.decode64(device.key)
     iv = cipher.random_iv
 
-    return {body: Base64.encode64(cipher.update(body) + cipher.final).encode('utf-8'), iv: Base64.encode64(iv).encode('utf-8')}
+    return {body: Base64.strict_encode64(cipher.update(body) + cipher.final), iv: iv}
   end
 
 end

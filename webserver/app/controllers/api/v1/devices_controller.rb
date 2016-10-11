@@ -6,25 +6,25 @@ class Api::V1::DevicesController < Api::V1::ApplicationController
   end
 
   def update
-    @body = decrypt_body(request.body, request.headers['vi'], device)
-    device.update_attributes(device_params)
+
+    if @device.nil?
+      # Fake decryption to prevent timing attacks
+      decrypt_body(request.body.string, request.headers['iv'], Device.first)
+    else
+      body = decrypt_body(request.body.string, request.headers['iv'], @device)
+      json_body = JSON.parse(body.strip)['device']['blood_sugars']
+      json_body.each do |sugar_level|
+        @device.blood_sugars.create(level: sugar_level['level'])
+      end
+    end
+
+    render nothing: true, status: 201
+
   end
 
   protected
 
   def load_device
-    device = Device.find_by_uid(request.headers['uid'])
-
-    if device.nil?
-      render nothing: true, status: 201
-    end
-  end
-
-  def device_params
-    @body.require(:device).permit(
-      blood_sugars: [
-        :level
-      ]
-    )
+    @device = Device.find_by_uid(request.headers['uid'])
   end
 end
