@@ -1,5 +1,6 @@
 class Device < ApplicationRecord
   include SecureUID
+  has_many :blood_sugars
 
   after_create :set_uid
   after_create :set_key
