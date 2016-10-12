@@ -1,15 +1,11 @@
 class Api::V1::DevicesController < Api::V1::ApplicationController
   include AESDecryptor
-  before_action :load_device
-
-  def create
-  end
 
   def update
 
     if @device.nil?
       # Fake decryption to prevent timing attacks
-      decrypt_body(request.body.string, request.headers['iv'], Device.first)
+      decrypt_body(request.body.string, 'thisisafakeiv', Device.first)
     else
       body = decrypt_body(request.body.string, request.headers['iv'], @device)
       json_body = JSON.parse(body.strip)['device']['blood_sugars']
@@ -20,11 +16,5 @@ class Api::V1::DevicesController < Api::V1::ApplicationController
 
     render nothing: true, status: 201
 
-  end
-
-  protected
-
-  def load_device
-    @device = Device.find_by_uid(request.headers['uid'])
   end
 end
