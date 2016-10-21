@@ -1,0 +1,23 @@
+<%= link_to 'Aanmaken', devices_path, method: :post %>
+<table>
+  <thead>
+    <tr>
+      <td>UID</td>
+      <td>Key in base64</td>
+      <td># Bloodsugars</td>
+      <td>Delete</td>
+      <td>Created at</td>
+    </tr>
+  </thead>
+  <tbody>
+    <% @devices.each do |device| %>
+      <tr>
+        <td><%= device.uid %></td>
+        <td><%= device.key %></td>
+        <td><%= device.blood_sugars.count %></td>
+        <td><%= link_to 'delete', device_path(device), method: :delete, data: {confirm: 'Are you sure?'} %></td>
+        <td><%= device.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

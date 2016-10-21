@@ -5,6 +5,10 @@ class Device < ApplicationRecord
   after_create :set_uid
   after_create :set_key
 
+  scope :ordered, -> {
+    order(:id)
+  }
+
   protected
 
   def set_uid

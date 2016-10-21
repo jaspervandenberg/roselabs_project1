@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   root 'firmwares#index'
 
   resources :firmwares
+  resources :devices
+
   namespace :api, constraints: { format: 'text' } do
     namespace :v1 do
       resource :devices
