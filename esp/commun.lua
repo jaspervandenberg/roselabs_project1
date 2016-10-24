@@ -1,10 +1,10 @@
 commun = {}
 
-commun.server = "192.168.1.105:3000"
+commun.server = "dev.jaspervdberg.nl"
 
 commun.setup = function(ssid, password)
     tmr.alarm(0, 1000, 1, function()
-       if wifi.sta.getip() == nil then
+       if wifi.ap.getip() == nil then
           wifi.sta.config(ssid, password)
           print("Connecting to AP...")
        else
@@ -28,3 +28,17 @@ commun.put = function(data, iv, deviceid)
     )
 end
 
+commun.get = function(deviceid)
+    http.get('http://'..commun.server..'/api/v1/firmwares',
+        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\n',
+        nil,
+        function(code, data)
+            if (code < 0) then
+                print("HTTP request failed")
+                return false
+            else
+                return data
+            end
+        end
+    )
+end
