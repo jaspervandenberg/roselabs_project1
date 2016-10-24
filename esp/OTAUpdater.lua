@@ -1,7 +1,7 @@
-dofile('p_crypto.lua')
-dofile('commun.lua')
+ota_updater = {}
 
-function write_base64_to_file(base64_string, filename)
+
+ota_updater.write_base64_to_file = function(base64_string, filename)
     update = encoder.fromBase64(base64_string)
     
     file.open(filename, 'w+') then
@@ -10,7 +10,7 @@ function write_base64_to_file(base64_string, filename)
     end
 end
 
-function verify_checksum(file_name, encrypted_checksum)
+ota_updater.verify_checksum = function(file_name, encrypted_checksum)
     file.open(filename, 'r') then
         conent = file.read()
         file.close()
@@ -28,13 +28,13 @@ function verify_checksum(file_name, encrypted_checksum)
     end
 end
 
-function apply_update(file_name)
+ota_updater.apply_update = function(file_name)
     file.rename('init.lua', 'init.lua.old')
     file.rename(file_name, 'init.lua')
     node.restart()
 end
 
-function check_for_update(server_hostname, device_id)
+ota_updater.check_for_update = function(server_hostname, device_id)
     http.get('http://' .. server_hostname .. '/api/v1/firmwares',
         'Content-Type: text/plain\r\nuid: '..deviceid..'\r\n',
         function(code, data)

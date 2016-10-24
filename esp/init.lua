@@ -1,4 +1,5 @@
 dofile("p_crypto.lua")
 dofile("commun.lua")
+dofile("OTAUpdater.lua")
 commun.setup("ssid","key")
 dofile("loop.lua")
