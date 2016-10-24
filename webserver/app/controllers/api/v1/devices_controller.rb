@@ -5,7 +5,7 @@ class Api::V1::DevicesController < Api::V1::ApplicationController
 
     if @device.nil?
       # Fake decryption to prevent timing attacks
-      decrypt_body(request.body.string, 'thisisafakeiv', Device.first)
+      decrypt_body(request.body.string, 'thisisafdflkjwflkwejlfkakeiv', Device.first)
     else
       body = decrypt_body(request.body.string, request.headers['iv'], @device)
       json_body = JSON.parse(body.strip)['device']['blood_sugars']

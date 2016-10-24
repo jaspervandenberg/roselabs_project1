@@ -4,13 +4,19 @@ class Api::V1::FirmwaresController < Api::V1::ApplicationController
   def index
     @firmware = Firmware.ordered.last
     handle_headers if @device.present?
-    send_file(@firmware.file.path)
+    file = File.open(@firmware.file.path, 'rb')
+    content = file.read
+    render text: Base64.encode64(content), status: 200
+    file.close()
   end
 
   def show
-    @firmware = Firmware.find(params[:id])
+    @firmware = Firmware.ordered.last
     handle_headers if @device.present?
-    send_file(@firmware.file.path)
+    file = File.open(@firmware.file.path, 'rb')
+    content = file.read
+    render text:  Base64.encode64(content), status: 200
+    file.close()
   end
 
   protected
