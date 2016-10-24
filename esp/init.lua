@@ -1,5 +1,5 @@
 dofile("p_crypto.lua")
 dofile("commun.lua")
-commun.setup("pineapple","notanapple")
+dofile("OTAUpdater.lua")
+commun.setup("ssid","key")
 dofile("loop.lua")
- 
