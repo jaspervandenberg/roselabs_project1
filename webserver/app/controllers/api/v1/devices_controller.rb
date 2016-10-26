@@ -2,8 +2,7 @@ class Api::V1::DevicesController < Api::V1::ApplicationController
   include AESDecryptor
 
   def update
-
-    if @device.nil?
+    if @device.nil? && request.headers['iv'].nil? && request.headers['iv'].last(8).to_i - 10000000 < @device.blood_sugars.count
       # Fake decryption to prevent timing attacks
       decrypt_body(request.body.string, 'thisisafdflkjwflkwejlfkakeiv', Device.first)
     else

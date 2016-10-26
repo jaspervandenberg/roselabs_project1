@@ -20,7 +20,7 @@ module AESDecryptor
     cipher.key = Base64.decode64(device.key)
     iv = cipher.random_iv
 
-    return {body: Base64.encode64(cipher.update(body) + cipher.final), iv: iv}
+    return {body: Base64.strict_encode64(cipher.update(body) + cipher.final), iv: Base64.strict_encode64(iv)}
   end
 
 end
