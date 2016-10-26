@@ -40,21 +40,3 @@ print("data")
         end
     )
 end
-
-
-commun.get = function(deviceid, callback)
-    findata = http.get('http://'..commun.server..'/api/v1/firmwares',
-        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\n',
-        function(code, data)
-            if (code < 0) then
-                callback = function(data)
-                    
-                end
-            else
-                findata = data
-                return data;
-            end
-        end
-    )
-    return findata;
-end

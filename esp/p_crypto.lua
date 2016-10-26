@@ -2,8 +2,8 @@ p_crypto = {}
 p_crypto.key = encoder.fromBase64("+vrX/9G5kSfaX8jbukkF0w==")
 
 --Decrypts using a base64 encoded body and iv(nounce)
-p_crypto.p_decrypt = function(base64Body, IV)
-    return crypto.decrypt("AES-CBC", p_crypto.key, encoder.fromBase64(base64Body), IV)
+p_crypto.p_decrypt = function(base64Body, base64IV)
+    return crypto.decrypt("AES-CBC", p_crypto.key, encoder.fromBase64(base64Body), encoder.fromBase64(base64IV))
 end
 
 --Encrypts using a generated iv
@@ -21,7 +21,6 @@ p_crypto.generate_iv = function()
     end
     
     if file.open("counter.num", "w+") then
-      -- write 'foo bar' to the end of the file
       file.write(nextnr + 1)
       file.close()
     end

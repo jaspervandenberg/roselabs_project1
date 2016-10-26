@@ -6,17 +6,19 @@ loop.sendData = function()
         IV = p_crypto.generate_iv()
         encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(10, 99).."}]}}", IV)
         
-        commun.put(encryptedData, IV, "hallojasper")
+        commun.put(encryptedData, IV, "rBhktM46dV0YT27")
         
     end)
 end
 
 loop.checkForUpdate = function()
-    tmr.alarm(1, 60000, 1, function()
+    tmr.alarm(1, 7000, 1, function()
         print("Checking for updated firmware")
-        print(commun.get("aaa"))
+        ota_updater.update("rBhktM46dV0YT27")
+        tmr.stop(1)
     end)
 end
 
-loop.sendData()
-loop.checkForUpdate()
+--loop.sendData()
+loop.checkForUpdate() 
+
