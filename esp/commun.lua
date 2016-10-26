@@ -1,6 +1,7 @@
 commun = {}
 
-commun.server = "192.168.1.108:3000"
+--commun.server = "192.168.1.108:3000"
+commun.server = "dev.jaspervdberg.nl"
 
 commun.setup = function(ssid, password)
 
