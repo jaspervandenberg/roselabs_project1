@@ -1,3 +1,6 @@
+uart.setup(0, 115200, 8, 0, 1, 1)
+
+
 dofile("p_crypto.lua")
 dofile("commun.lua")
 dofile("OTAUpdater.lua")
