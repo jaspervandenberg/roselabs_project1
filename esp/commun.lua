@@ -1,24 +1,37 @@
 commun = {}
 
-commun.server = "192.168.1.105:3000"
+commun.server = "192.168.1.108:3000"
 
 commun.setup = function(ssid, password)
-    tmr.alarm(0, 1000, 1, function()
-       if wifi.sta.getip() == nil then
-          wifi.sta.config(ssid, password)
+
+    enduser_setup.start(
+  function()
+    print("Connected to wifi as:" .. wifi.sta.getip())
+  end,
+  function(err, str)
+    print("enduser_setup: Err #" .. err .. ": " .. str)
+  end
+);
+    
+    tmr.alarm(2, 1000, 1, function()
+    
+       if wifi.ap.getip() == nil then
+          --wifi.sta.config(ssid, password)
           print("Connecting to AP...")
        else
           print("IP Info: \nIP Address: ", wifi.ap.getip())
-          tmr.stop(0)
+          tmr.stop(2)
        end
     end)
 end
 
 commun.put = function(data, iv, deviceid)
+print("data")
     http.put('http://'..commun.server..'/api/v1/devices',
         'Content-Type: text/plain\r\nuid: '..deviceid..'\r\niv: '..iv..'\r\n',
         data,
         function(code, data)
+        
             if (code < 0) then
                 print("HTTP request failed")
             else
@@ -28,3 +41,20 @@ commun.put = function(data, iv, deviceid)
     )
 end
 
+
+commun.get = function(deviceid, callback)
+    findata = http.get('http://'..commun.server..'/api/v1/firmwares',
+        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\n',
+        function(code, data)
+            if (code < 0) then
+                callback = function(data)
+                    
+                end
+            else
+                findata = data
+                return data;
+            end
+        end
+    )
+    return findata;
+end
