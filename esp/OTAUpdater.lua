@@ -2,7 +2,7 @@ ota_updater = {}
 
 ota_updater.getUpdate = function(deviceid)
     http.get('http://'..commun.server..'/api/v1/firmwares',
-        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\n',
+        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\nlastChecksum: '..ota_updater.readLastChecksum()..'\r\n',
         function(code, data)
             if (code == 200) then
 
@@ -20,7 +20,10 @@ ota_updater.getUpdate = function(deviceid)
             elseif (code == 204) then
                 print("No new Firmware")
             else
-                print("faild to get update")
+                print("faild to get update, code: "..code)
+                if(data ~= nil) then
+                    print(data)
+                end
             end
         end
     )
@@ -87,6 +90,22 @@ ota_updater.update = function(deviceid)
         
 end
 
+ota_updater.writeChecksumToFile = function(checksum)
+    if file.open("version.key", "w+") then
+        file.write(checksum)
+        file.close()
+    end  
+end
+
+ota_updater.readLastChecksum = function()
+    checksum = ''
+    if file.open("version.key") then
+        checksum = file.read()  
+        file.close()
+    end  
+    return checksum
+end
+
 ota_updater.verify_checksum = function(updateContent, base64encrypted_checksum, base64IV)
     
     calculatedUpdateHash = crypto.hash("sha1", updateContent)
@@ -94,6 +113,7 @@ ota_updater.verify_checksum = function(updateContent, base64encrypted_checksum, 
     
     if encrypted_file_hash == encrypted_checksum then
         print("checksum valid")        
+        ota_updater.writeChecksumToFile(base64encrypted_checksum)
         return true
     else
         print("checksum invalid")
