@@ -4,6 +4,7 @@
     <tr>
       <td>UID</td>
       <td>Key in base64</td>
+      <td>Firmware version</td>
       <td># Bloodsugars</td>
       <td>Delete</td>
       <td>Created at</td>
@@ -14,6 +15,7 @@
       <tr>
         <td><%= device.uid %></td>
         <td><%= device.key %></td>
+        <td><%= device.firmware.nil? ? 'Unknown version' : device.firmware.version %></td>
         <td><%= device.blood_sugars.count %></td>
         <td><%= link_to 'delete', device_path(device), method: :delete, data: {confirm: 'Are you sure?'} %></td>
         <td><%= device.created_at %></td>

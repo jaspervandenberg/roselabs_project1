@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161012104516) do
+ActiveRecord::Schema.define(version: 20161027073132) do
 
   create_table "blood_sugars", force: :cascade do |t|
     t.string   "level"
@@ -23,8 +23,10 @@ ActiveRecord::Schema.define(version: 20161012104516) do
   create_table "devices", force: :cascade do |t|
     t.string   "uid"
     t.string   "key"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.integer  "firmware_id"
+    t.index ["firmware_id"], name: "index_devices_on_firmware_id"
   end
 
   create_table "firmwares", force: :cascade do |t|

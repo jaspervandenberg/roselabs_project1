@@ -29,7 +29,8 @@ class FirmwaresController < ApplicationController
 
   def firmware_params
     params.require(:firmware).permit(
-      :file
+      :file,
+      :version
     )
   end
 end
