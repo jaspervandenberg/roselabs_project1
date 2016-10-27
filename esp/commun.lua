@@ -1,7 +1,7 @@
 commun = {}
 
---commun.server = "192.168.1.108:3000"
-commun.server = "dev.jaspervdberg.nl"
+commun.server = "192.168.1.105:3000"
+--commun.server = "dev.jaspervdberg.nl"
 
 commun.setup = function(ssid, password)
 
@@ -27,7 +27,6 @@ commun.setup = function(ssid, password)
 end
 
 commun.put = function(data, iv, deviceid)
-print("data")
     http.put('http://'..commun.server..'/api/v1/devices',
         'Content-Type: text/plain\r\nuid: '..deviceid..'\r\niv: '..iv..'\r\n',
         data,

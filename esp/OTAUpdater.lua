@@ -2,7 +2,7 @@ ota_updater = {}
 
 ota_updater.getUpdate = function(deviceid)
     http.get('http://'..commun.server..'/api/v1/firmwares',
-        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\nlastChecksum: '..ota_updater.readLastChecksum()..'\r\n',
+        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\nLast-Checksum: '..ota_updater.readLastChecksum()..'\r\n',
         function(code, data)
             if (code == 200) then
 
@@ -108,12 +108,14 @@ end
 
 ota_updater.verify_checksum = function(updateContent, base64encrypted_checksum, base64IV)
     
-    calculatedUpdateHash = crypto.hash("sha1", updateContent)
+    calculatedUpdateHash = crypto.hash("sha256", updateContent)
     checksum = p_crypto.p_decrypt(base64encrypted_checksum, base64IV)
+    print(string.sub(encoder.toBase64(checksum), 0, 43)..'=')
+    print(encoder.toBase64(calculatedUpdateHash))
     
-    if encrypted_file_hash == encrypted_checksum then
+    if encoder.toBase64(calculatedUpdateHash) == string.sub(encoder.toBase64(checksum), 0, 43)..'=' then
         print("checksum valid")        
-        ota_updater.writeChecksumToFile(base64encrypted_checksum)
+        ota_updater.writeChecksumToFile(string.sub(encoder.toBase64(checksum), 0, 43)..'=')
         return true
     else
         print("checksum invalid")

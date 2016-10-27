@@ -1,6 +1,6 @@
 p_crypto = {}
 --p_crypto.key = encoder.fromBase64("+vrX/9G5kSfaX8jbukkF0w==")
-p_crypto.key = encoder.fromBase64("+vrX/9G5kSfaX8jbukkF0w==")
+p_crypto.key = encoder.fromBase64("lKHLOaeUKuUFxkab3xJX8g==")
 
 --Decrypts using a base64 encoded body and iv(nounce)
 p_crypto.p_decrypt = function(base64Body, base64IV)
