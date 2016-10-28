@@ -8,6 +8,8 @@ class DevicesController < ApplicationController
       @device.blood_sugars.each do |bs|
         @chart_data[bs.created_at] = bs.level
       end
+    else
+      recirect_to root_path, notice: 'admin cant look at a device'
     end
   end
 
