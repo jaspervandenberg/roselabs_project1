@@ -3,7 +3,6 @@
   <thead>
     <tr>
       <td>Bloodsugar value</td>
-      <td>User identification</td>
       <td>Measured at</td>
     </tr>
   </thead>
@@ -11,7 +10,6 @@
     <% @blood_sugars.each do |bs| %>
       <tr>
         <td><%= bs.level %></td>
-        <td><%= bs.device.user.id %></td>
         <td><%= bs.created_at %></td>
       </tr>
     <% end %>
