@@ -1,0 +1,5 @@
+<h1>Create a new device</h1>
+<%= form_for [:admin, @device] do |f| %>
+  <%= f.collection_select :user_id, @users, :id, :email %>
+  <%= f.submit %>
+<% end %>

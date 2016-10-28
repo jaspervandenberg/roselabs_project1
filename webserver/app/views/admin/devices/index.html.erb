@@ -1,4 +1,4 @@
-<%= link_to 'Aanmaken', devices_path, method: :post %>
+<h1>Saved devices</h1>
 <table>
   <thead>
     <tr>
@@ -6,6 +6,7 @@
       <td>Key in base64</td>
       <td>Firmware version</td>
       <td># Bloodsugars</td>
+      <td>Coupled to user</td>
       <td>Delete</td>
       <td>Created at</td>
     </tr>
@@ -17,9 +18,11 @@
         <td><%= device.key %></td>
         <td><%= device.firmware.nil? ? 'Unknown version' : device.firmware.version %></td>
         <td><%= device.blood_sugars.count %></td>
-        <td><%= link_to 'delete', device_path(device), method: :delete, data: {confirm: 'Are you sure?'} %></td>
+        <td><%= device.user.email %></td>
+        <td><%= link_to 'delete', admin_device_path(device), method: :delete, data: {confirm: 'Are you sure?'} %></td>
         <td><%= device.created_at %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+<%= link_to 'Create new device', new_admin_device_path, class: 'button'  %>

@@ -6,6 +6,7 @@
       <td>Firmware</td>
       <td>Firmware version</td>
       <td>Firmware checksum</td>
+      <td>Delete firmware</td>
       <td>Created at</td>
     </tr>
   </thead>
@@ -16,8 +17,11 @@
         <td><%= link_to firmware.file_file_name, firmware.file.url %></td>
         <td><%= firmware.version %></td>
         <td><%= firmware.checksum %></td>
+        <td><%= link_to 'delete', admin_firmware_path(firmware), method: :delete, data: {confirm: 'Are you sure?'} %></td>
         <td><%= firmware.created_at %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+<%= link_to 'upload firmware', new_admin_firmware_path, class: 'button' %>

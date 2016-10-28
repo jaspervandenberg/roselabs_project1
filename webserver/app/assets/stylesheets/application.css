@@ -12,17 +12,23 @@
  *
  *= require_tree .
  *= require_self
- */
-table{
-    width: 100%;
+ *= require foundation_and_overrides
+
+*/
+
+.top-bar{
+    margin-bottom: 20px;
 }
 
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
+.top-bar > div > ul > li > a{
+    color: #000000;
 }
 
-.container {
-  width: 80%;
-  margin: 20px auto;
+.top-bar > div > ul > li > a:hover{
+    color: #008000;
+}
+
+.button:hover, .button:focus {
+    background-color: #008000;
+    color: #00000;
 }

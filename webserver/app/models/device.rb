@@ -1,7 +1,8 @@
 class Device < ApplicationRecord
   include SecureUID
-  has_many :blood_sugars
+  has_many :blood_sugars, dependent: :destroy
   belongs_to :firmware
+  belongs_to :user
 
   after_create :set_uid
   after_create :set_key
@@ -9,6 +10,10 @@ class Device < ApplicationRecord
   scope :ordered, -> {
     order(:id)
   }
+
+  def last_avg_blood_sugars(amount)
+    self.blood_sugars.average(:level)
+  end
 
   protected
 

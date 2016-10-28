@@ -1,0 +1,40 @@
+<h1>Statistics platform</h1>
+
+<% if @device.last_avg_blood_sugars(10).to_i > 11 %>
+  <div class="callout alert">
+    <h4>Your current health evaluation</h4>
+    <p>You could improve your health values, get to work!</p>
+  </div>
+<% else %>
+  <div class="callout success">
+    <h4>Your current health evaluation</h4>
+    <p>Everything is a okay</p>
+  </div>
+<% end %>
+
+<div class="callout">
+  <h4>Blood sugar graph</h4>
+  <%= line_chart(@chart_data, label: 'Bloodsugar value') %>
+</div>
+
+<div class="callout">
+  <h4>Bloodsugar values(in mmol/l)</h4>
+  <table>
+    <thead>
+      <tr>
+        <td>Bloodsugar level</td>
+        <td>Time of value</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <% @device.blood_sugars.each do |bs| %>
+          <tr>
+            <td><%= bs.level %></td>
+            <td><%= bs.created_at %></td>
+          </tr>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+</div>
