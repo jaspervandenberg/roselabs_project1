@@ -9,7 +9,7 @@ class DevicesController < ApplicationController
         @chart_data[bs.created_at] = bs.level
       end
     else
-      recirect_to root_path, notice: 'admin cant look at a device'
+      redirect_to root_path, notice: 'admin cant look at a device'
     end
   end
 
