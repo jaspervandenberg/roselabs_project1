@@ -2,7 +2,7 @@ ota_updater = {}
 
 ota_updater.getUpdate = function()
     http.get('http://'..vars.server..'/api/v1/firmwares',
-        'Content-Type: text/plain\r\nuid: '..vars.uid..'\r\nLast-Checksum: '..ota_updater.readLastChecksum()..'\r\n',
+        'Content-Type: text/plain\r\nuid: '..vars.uid..'\r\nLast-Checksum: '..encoder.toBase64(crypto.fhash("sha256","init.lua"))..'\r\n',
         function(code, data)
             if (code == 200) then
 
