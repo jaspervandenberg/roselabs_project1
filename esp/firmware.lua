@@ -1,4 +1,5 @@
 uart.setup(0, 115200, 8, 0, 1, 1)
+dofile("vars.lua")
 
 commun = {}
 
@@ -40,6 +41,8 @@ commun.put = function(data, iv, deviceid)
     )
 end
 
+commun.setup()
+
 p_crypto = {}
 
 --Decrypts using a base64 encoded body and iv(nounce)
@@ -73,7 +76,7 @@ ota_updater = {}
 
 ota_updater.getUpdate = function()
     http.get('http://'..vars.server..'/api/v1/firmwares',
-        'Content-Type: text/plain\r\nuid: '..vars.uid..'\r\nLast-Checksum: '..ota_updater.readLastChecksum()..'\r\n',
+        'Content-Type: text/plain\r\nuid: '..vars.uid..'\r\nLast-Checksum: '..encoder.toBase64(crypto.fhash("sha256","init.lua"))..'\r\n',
         function(code, data)
             if (code == 200) then
 
@@ -167,7 +170,7 @@ loop.sendData = function()
     tmr.alarm(0, 10000, 1, function()
     
         IV = p_crypto.generate_iv()
-        encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(3, 30).."}]}}", IV)
+        encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(3, 32).."}]}}", IV)
         
         commun.put(encryptedData, IV, vars.uid)
         
@@ -183,6 +186,3 @@ end
 
 loop.sendData()
 loop.checkForUpdate() 
-
-dofile("vars.lua")
-commun.setup("pineapple","notanapple")
