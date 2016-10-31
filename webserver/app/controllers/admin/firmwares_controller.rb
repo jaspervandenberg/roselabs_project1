@@ -9,7 +9,7 @@ class Admin::FirmwaresController < Admin::ApplicationController
 
   def create
     if @firmware = Firmware.create(firmware_params)
-      redirect_to firmwares_path
+      redirect_to admin_firmwares_path, notice: 'Firmware created'
     else
       render 'new'
     end
@@ -22,7 +22,7 @@ class Admin::FirmwaresController < Admin::ApplicationController
   def destroy
     @firmware = Firmware.find(params[:id])
     @firmware.destroy
-    redirect_to firmwares_path
+    redirect_to admin_firmwares_path, notice: 'Firmware destroyed'
   end
 
   protected
