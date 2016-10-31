@@ -1,3 +1,4 @@
+dofile("vars.lua")
 dofile("p_crypto.lua")
 dofile("commun.lua")
 dofile("OTAUpdater.lua")

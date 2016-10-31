@@ -1,9 +1,6 @@
 commun = {}
 
-commun.server = "192.168.1.105:3000"
---commun.server = "dev.jaspervdberg.nl"
-
-commun.setup = function(ssid, password)
+commun.setup = function()
 
     enduser_setup.start(
   function()
@@ -27,7 +24,7 @@ commun.setup = function(ssid, password)
 end
 
 commun.put = function(data, iv, deviceid)
-    http.put('http://'..commun.server..'/api/v1/devices',
+    http.put('http://'..vars.server..'/api/v1/devices',
         'Content-Type: text/plain\r\nuid: '..deviceid..'\r\niv: '..iv..'\r\n',
         data,
         function(code, data)

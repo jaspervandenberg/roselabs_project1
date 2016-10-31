@@ -1,12 +1,17 @@
 ota_updater = {}
 
-ota_updater.getUpdate = function(deviceid)
-    http.get('http://'..commun.server..'/api/v1/firmwares',
-        'Content-Type: text/plain\r\nuid: '..deviceid..'\r\nLast-Checksum: '..ota_updater.readLastChecksum()..'\r\n',
+ota_updater.getUpdate = function()
+    http.get('http://'..vars.server..'/api/v1/firmwares',
+        'Content-Type: text/plain\r\nuid: '..vars.uid..'\r\nLast-Checksum: '..ota_updater.readLastChecksum()..'\r\n',
         function(code, data)
             if (code == 200) then
 
-
+                fileHmac = crypto.hmac('sha256', data, vars.key)
+                if file.open("hmac.key", "w+") then
+                  file.write(encoder.toBase64(fileHmac))
+                  file.close()
+                end  
+                
                 for i=0, string.len(data), 1000 do 
                     if file.open("update.tmp", "a") then
                       file.write(string.sub(data, i+1 ,i + 1000))
@@ -29,98 +34,48 @@ ota_updater.getUpdate = function(deviceid)
     )
 end
 
-ota_updater.update = function(deviceid)
+ota_updater.update = function()
     updateData = ''
 
     if file.open("update.tmp") then
-        fileread = file.read()
-        while fileread do
-            if(fileread ~= nil) then
-                updateData = updateData..fileread
-            end
-            fileread = file.read()    
-            
-        end
-        file.close()
+       file.close()
+       
     else
-        ota_updater.getUpdate(deviceid)
+        ota_updater.getUpdate()
         return
     end
-
-    --if pcall(function() 
-    print(updateData)
-        updateJson = cjson.decode(updateData)
-        base64_encrypted_checksum = ''
-        updatefile = ''
-        base64_iv = ''
-        for k,v in pairs(updateJson) do 
-
-            if (k == 'base64_encrypted_checksum') then
-                base64_encrypted_checksum = v
-            elseif (k == 'base64_file') then
-                updatefile = encoder.fromBase64(v)
-                        
-            elseif (k == 'base64_iv') then
-                base64_iv = v
-            end
-        end
     
-        if(ota_updater.verify_checksum(updatefile, base64_encrypted_checksum, base64_iv)) then
-            file.remove("update.chk")
-            for i=0, string.len(updatefile), 1000 do 
-                if file.open("update.chk", "a") then
-                  file.write(string.sub(updatefile, i+1 ,i + 1000))
-                  file.close()
-                  print(string.sub(updatefile, i+1 ,i + 1000))
-                end                    
-            end
-            print("verified firmware writen to file")
-            file.remove("update.tmp")
-
-            ota_updater.apply_update("update.chk")
-        else
-            print("checksum not valid, updated firmware not writen to flash")
-        end
-
-    --end) then
-    --    print("fin")
-   -- else
-   --     print("fail")
-   -- end
+    ota_updater.verifyAndApplyUpdate()
         
-end
-
-ota_updater.writeChecksumToFile = function(checksum)
-    if file.open("version.key", "w+") then
-        file.write(checksum)
-        file.close()
-    end  
 end
 
 ota_updater.readLastChecksum = function()
     checksum = ''
-    if file.open("version.key") then
+    if file.open("hmac.key") then
         checksum = file.read()  
         file.close()
     end  
     return checksum
 end
 
-ota_updater.verify_checksum = function(updateContent, base64encrypted_checksum, base64IV)
-    
-    calculatedUpdateHash = crypto.hash("sha256", updateContent)
-    checksum = p_crypto.p_decrypt(base64encrypted_checksum, base64IV)
-    print(string.sub(encoder.toBase64(checksum), 0, 43)..'=')
-    print(encoder.toBase64(calculatedUpdateHash))
-    
-    if encoder.toBase64(calculatedUpdateHash) == string.sub(encoder.toBase64(checksum), 0, 43)..'=' then
-        print("checksum valid")        
-        ota_updater.writeChecksumToFile(string.sub(encoder.toBase64(checksum), 0, 43)..'=')
-        return true
-    else
-        print("checksum invalid")
-        return false
-    end
+ota_updater.verifyAndApplyUpdate = function(updateContent, hmac_checksum)
+
+    http.get('http://'..vars.server..'/api/v1/firmwares?hmac=true',
+        'Content-Type: text/plain\r\nuid: '..vars.uid..'\r\n',
+        function(code, data)
+            if (code == 200) then
+                if ota_updater.readLastChecksum() == data then
+                    ota_updater.apply_update("update.tmp")
+                    return true
+                else
+                    print("hmac invalid")
+                    return false
+                end
+            else
+                print("Can't get hmac")
+            end
+        end
+    )    
 end
 
 ota_updater.apply_update = function(file_name)
@@ -130,6 +85,7 @@ ota_updater.apply_update = function(file_name)
     file.rename(file_name, 'init.lua')
     file.rename(file_name, 'init.lua')
     file.rename(file_name, 'init.lua')
+    file.remove("update.tmp")
     print("init.lua replaced, restart MCU")
     node.restart()
 end
