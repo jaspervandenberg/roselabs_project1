@@ -18,16 +18,16 @@
           <li class="menu-text">
             <%= image_tag 'logo.png', size: '40x40' %>
           </li>
-          <li>
+          <li <%= params[:controller] == 'pages' ? 'class=activated' : '' %>>
             <%= link_to 'Home', page_path %>
           </li>
-          <li>
+          <li <%= params[:controller] == 'blood_sugars' ? 'class=activated' : '' %>>
             <%= link_to 'Measurements database', blood_sugars_path %>
           </li>
-          <li>
+          <li <%= params[:controller] == 'firmwares' ? 'class=activated' : '' %>>
             <%= link_to 'Software', firmwares_path %>
           </li>
-          <li>
+          <li <%= params[:controller] == 'devices' ? 'class=activated' : '' %>>
             <%= link_to 'My statistics platform', device_path %>
           </li>
           <% if current_user.present? && current_user.admin? %>
@@ -51,7 +51,19 @@
         </ul>
       </div>
     </div>
+
     <div class="row">
+      <% if flash[:alert].present? %>
+        <div class="callout alert">
+          <%= flash[:alert]%>
+        </div>
+      <% end %>
+
+      <% if flash[:notice].present? %>
+        <div class="callout primary">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
   </body>

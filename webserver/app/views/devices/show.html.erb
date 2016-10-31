@@ -1,13 +1,15 @@
 <h1>Statistics platform</h1>
 
-<% if @device.last_avg_blood_sugars(10).to_i > 11 %>
+<% if @bs_avg > 11 %>
   <div class="callout alert">
     <h4>Your current health evaluation</h4>
+    <p>Bloodsugar value: <%= @bs_avg %> mmol/l</p>
     <p>You could improve your health values, get to work!</p>
   </div>
 <% else %>
   <div class="callout success">
     <h4>Your current health evaluation</h4>
+    <p>Bloodsugar value: <%= @bs_avg %> mmol/</p>
     <p>Everything is a okay</p>
   </div>
 <% end %>
@@ -28,7 +30,7 @@
     </thead>
     <tbody>
       <tr>
-        <% @device.blood_sugars.each do |bs| %>
+        <% @device.blood_sugars.limit(10).each do |bs| %>
           <tr>
             <td><%= bs.level %></td>
             <td><%= bs.created_at %></td>

@@ -5,17 +5,10 @@ class Api::V1::FirmwaresController < Api::V1::ApplicationController
   before_action :blank_if_up_to_date
 
   def index
-    if @device.present?
-      encrypted_data = encrypt_body(Base64.strict_decode64(@firmware.checksum), @device)
-
-      json_content = {base64_encrypted_checksum: encrypted_data[:body], base64_file: @content, base64_iv: encrypted_data[:iv]}
-      json_content = JSON.generate(json_content)
-
-      @device.update_attribute(:firmware_id, @firmware.id)
-
-      render text: json_content, status: 200
+    if params[:hmac].present?
+      render text: calculate_hmac(@plain_file, @device)
     else
-      render text: JSON.generate(base64_file: @content)
+      send_file @firmware.file.path
     end
   end
 
@@ -28,7 +21,8 @@ class Api::V1::FirmwaresController < Api::V1::ApplicationController
   def load_firmware
     @firmware = Firmware.ordered.last
     file = File.open(@firmware.file.path, 'rb')
-    @content = Base64.strict_encode64(file.read)
+    @plain_file = file.read
+    @base64_content = Base64.strict_encode64(@plain_file)
     file.close()
   end
 

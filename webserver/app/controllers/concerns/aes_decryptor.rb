@@ -19,8 +19,14 @@ module AESDecryptor
     cipher.encrypt
     cipher.key = Base64.decode64(device.key)
     iv = cipher.random_iv
+    digest = OpenSSL::Digest.new('sha256')
 
     return {body: Base64.strict_encode64(cipher.update(body) + cipher.final), iv: Base64.strict_encode64(iv)}
+  end
+
+  def calculate_hmac(body, device)
+    digest = OpenSSL::Digest.new('sha256')
+    return Base64.strict_encode64(OpenSSL::HMAC.digest(digest, Base64.decode64(device.key), body))
   end
 
 end

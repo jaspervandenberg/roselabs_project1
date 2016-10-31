@@ -16,10 +16,10 @@
       <div class="top-bar-left">
         <ul class="dropdown menu" data-dropdown-menu>
           <li class="menu-text"><%= image_tag 'logo.png', size: '40x40' %></li>
-          <li>
+          <li <%= params[:controller] == 'admin/devices' ? 'class=activated' : '' %>>
             <%= link_to 'Devices', admin_devices_path %>
           </li>
-          <li>
+          <li <%= params[:controller] == 'admin/firmwares' ? 'class=activated' : '' %>>
             <%= link_to 'Firmwares', admin_firmwares_path %>
           </li>
           <li>
@@ -42,6 +42,17 @@
       </div>
     </div>
     <div class="row">
+      <% if flash[:alert].present? %>
+        <div class="callout alert">
+          <%= flash[:alert]%>
+        </div>
+      <% end %>
+
+      <% if flash[:notice].present? %>
+        <div class="callout primary">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
   </body>
