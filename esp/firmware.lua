@@ -17,7 +17,6 @@ commun.setup = function()
     tmr.alarm(2, 1000, 1, function()
     
        if wifi.ap.getip() == nil then
-          --wifi.sta.config(ssid, password)
           print("Connecting to AP...")
        else
           print("IP Info: \nIP Address: ", wifi.ap.getip())
@@ -45,19 +44,20 @@ commun.setup()
 
 p_crypto = {}
 
---Decrypts using a base64 encoded body and iv(nounce)
 p_crypto.p_decrypt = function(base64Body, base64IV)
     return crypto.decrypt("AES-CBC", vars.key, encoder.fromBase64(base64Body), encoder.fromBase64(base64IV))
 end
 
---Encrypts using a generated iv
 p_crypto.p_encrypt = function(body, IV)
     encryptedData = crypto.encrypt("AES-CBC", vars.key, body, IV)
     return encoder.toBase64(encryptedData)
 end
 
---Generate iv for encryption
 p_crypto.generate_iv = function()
+    return math.random(10000000, 99999999)..math.random(10000000, 99999999)
+end
+
+p_crypto.get_counter = function()
     nextnr = 10000000
     if file.open("counter.num") then
       nextnr = file.read()
@@ -69,7 +69,7 @@ p_crypto.generate_iv = function()
       file.close()
     end
 
-    return math.random(10000000, 99999999)..nextnr
+    return nextnr
 end
 
 ota_updater = {}
@@ -170,7 +170,7 @@ loop.sendData = function()
     tmr.alarm(0, 10000, 1, function()
     
         IV = p_crypto.generate_iv()
-        encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(3, 32).."}]}}", IV)
+        encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(3, 32).."}], \"counter\": "..p_crypto.get_counter().."}}", IV)
         
         commun.put(encryptedData, IV, vars.uid)
         
@@ -185,4 +185,4 @@ loop.checkForUpdate = function()
 end
 
 loop.sendData()
-loop.checkForUpdate() 
+loop.checkForUpdate()

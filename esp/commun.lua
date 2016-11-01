@@ -14,7 +14,6 @@ commun.setup = function()
     tmr.alarm(2, 1000, 1, function()
     
        if wifi.ap.getip() == nil then
-          --wifi.sta.config(ssid, password)
           print("Connecting to AP...")
        else
           print("IP Info: \nIP Address: ", wifi.ap.getip())

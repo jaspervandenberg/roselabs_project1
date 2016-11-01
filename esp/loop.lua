@@ -4,7 +4,7 @@ loop.sendData = function()
     tmr.alarm(0, 10000, 1, function()
     
         IV = p_crypto.generate_iv()
-        encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(3, 32).."}]}}", IV)
+        encryptedData = p_crypto.p_encrypt("{\"device\": {\"blood_sugars\": [{\"level\": "..math.random(3, 32).."}], \"counter\": "..p_crypto.get_counter().."}}", IV)
         
         commun.put(encryptedData, IV, vars.uid)
         
