@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   devise_for :users
   root 'pages#show'
 
+  mount ActionCable.server => '/cable'
+
   resource :page
   resources :blood_sugars
   resource :device

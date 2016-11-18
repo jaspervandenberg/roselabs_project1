@@ -1,3 +1,48 @@
+<script>
+ function write_to_chart(data){
+     var chart=$("#chart-1").highcharts();
+     var series = chart.series[0];
+     if(series.data.length >= 10){
+         series.addPoint({x: parseInt(data.time), y: parseInt(data.level)}, true, true);
+     }else{
+         series.addPoint({x: parseInt(data.time), y: parseInt(data.level)}, true, false);
+     }
+ }
+
+ function write_to_table(data){
+     var date = epochToJsDate(parseInt(data.time));
+     var properDay = '';
+
+     if (date.getDate().toString().length == 1){
+         properDay = '0' + date.getDate();
+     }else{
+         properday = date.getDate();
+     }
+
+
+     $('#bloodsugar_table > tbody').prepend('<tr><td>' + data.level + '</td><td>' + properDay + '-' + date.getMonth() + '-' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds() + '</td></tr>')
+
+     var row = $('tr');
+     if (row.length >= 10){
+         $('tr')[row.length - 1].remove();
+     }
+ }
+
+ function epochToJsDate(ts){
+     var date = new Date(ts);
+     date.setMonth(date.getMonth() + 1);
+     return date;
+ }
+
+ App.cable.subscriptions.create({channel: 'GraphingChannel'},
+                                {
+                                    received: function(data) {
+                                        write_to_chart(data);
+                                        write_to_table(data);
+                                    }
+                                });
+</script>
+
 <h1>Statistics platform</h1>
 
 <% if @bs_avg > 11 %>
@@ -16,12 +61,12 @@
 
 <div class="callout">
   <h4>Blood sugar graph</h4>
-  <%= line_chart(@chart_data, label: 'Bloodsugar value') %>
+  <%= line_chart(@chart_data, label: 'Bloodsugar value', colors: ['#ffa64d']) %>
 </div>
 
 <div class="callout">
   <h4>Bloodsugar values(in mmol/l)</h4>
-  <table>
+  <table id="bloodsugar_table">
     <thead>
       <tr>
         <td>Bloodsugar level</td>
@@ -29,14 +74,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <% @device.blood_sugars.limit(10).each do |bs| %>
-          <tr>
-            <td><%= bs.level %></td>
-            <td><%= bs.created_at %></td>
-          </tr>
-        <% end %>
-      </tr>
+      <% @device.blood_sugars.order(created_at: :desc).limit(10).each do |bs| %>
+        <tr>
+          <td><%= bs.level %></td>
+          <td><%= (bs.created_at + 1.hours).strftime('%d-%m-%Y %H:%M:%S') %></td>
+        </tr>
+      <% end %>
     </tbody>
   </table>
 </div>

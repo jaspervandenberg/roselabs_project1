@@ -12,7 +12,7 @@ class Device < ApplicationRecord
   }
 
   def last_avg_blood_sugars(amount)
-    self.blood_sugars.average(:level)
+    self.blood_sugars.limit(10).average(:level)
   end
 
   protected
